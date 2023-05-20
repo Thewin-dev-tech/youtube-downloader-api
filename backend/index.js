@@ -19,7 +19,7 @@ app.get("/mp3-info/:url",(request,response,next)=>{
         if(!url) throw new Error("invalid_url");
         
         yt.getInfo(url).then(info => {
-            return response.status(200).send(info);
+            return response.status(200).json(info);
         });
     }catch(error){
         console.error(error.stack);
