@@ -22,7 +22,8 @@ app.get("/mp3/:url",async (request,response,next)=>{
         yt.convertAudio({
             url: url,
             itag: 140,
-            directoryDownload: `.`+dir
+            directoryDownload: `.`+dir,
+            title: "Your title here"
         },()=>{
             console.log(`กำลังโหลด....`);
         },async (file)=>{
