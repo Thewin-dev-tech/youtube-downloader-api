@@ -19,6 +19,13 @@ app.get("/mp3/:url",async (request,response,next)=>{
 
         console.log(url);
 
+        //---- clear files ----
+        let files = await fs.readdir(`.`+dir);
+        for(file of files){
+            await fs.unlink(`.`+dir+file);
+        }
+        //--------------------
+
         yt.convertAudio({
             url: url,
             itag: 140,
@@ -30,13 +37,11 @@ app.get("/mp3/:url",async (request,response,next)=>{
 
             console.log("เสร็จสิ้น");
 
-            let files = await fs.readdir(`.`+dir);
+            files = await fs.readdir(`.`+dir);
             const targetPath = dir+files[0];
             response.download(path.join(__dirname + targetPath));
     
-            for(file of files){
-                await fs.unlink(`.`+dir+file);
-            }
+       
             return ;
         })
 
