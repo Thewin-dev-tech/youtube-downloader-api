@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- basic -->
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- mobile metas -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="initial-scale=1, maximum-scale=1">
+<!-- site metas -->
+<title>โหลดเพลงยูทูป</title>
+<meta name="keywords" content="">
+<meta name="description" content="">
+<meta name="author" content="">	
+<!-- bootstrap css -->
+<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+<!-- style css -->
+<link rel="stylesheet" type="text/css" href="css/style.css">
+<!-- Responsive-->
+<link rel="stylesheet" href="css/responsive.css">
+<!-- fevicon -->
+<link rel="icon" href="images/fevicon.png" type="image/gif" />
+<!-- Scrollbar Custom CSS -->
+<link rel="stylesheet" href="css/jquery.mCustomScrollbar.min.css">
+<!-- Tweaks for older IEs-->
+<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
+<!-- owl stylesheets --> 
+<link rel="stylesheet" href="css/owl.carousel.min.css">
+<link rel="stylesoeet" href="css/owl.theme.default.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" media="screen">
+
+</head>
+<body>
+	<!-- header section start-->
+	
+	<!-- header section start-->
+	<!-- banner section start-->
+	<div class="banner_section layout_padding">
+		<div class="container">
+			<h1 class="best_taital">โหลดเพลงยูทูปง่ายมาก</h1>
+			<div class="box_main">
+			    <input type="" id="url-target" class="email_bt" placeholder="วางหม่องนี้" name="">
+				<button class="subscribe_bt" onClick="download()"><a href="#">โหลดโลด</a></button>
+		    </div>
+			<br/>
+			<h3 style="color:white;">วิธีใช้ : </h3>
+			<img src="./images/how-to.png" style="max-width: 300px;" />
+			<p class="there_text">1.) ก็อปลิงค์ยูทูป</p>
+		    <p class="there_text">2.) วาง</p>
+			<p class="there_text">3.) กดโหลด</p>
+			<p class="there_text">4.) แล้วหละ</p>
+			
+		    <div class="bt_main">
+		    </div>
+		</div>
+	</div>
+	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+	 <script src="js/jquery.min.js"></script>
+	 <script src="js/popper.min.js"></script>
+	 <script src="js/bootstrap.bundle.min.js"></script>
+      <script src="js/jquery-3.0.0.min.js"></script>
+      <script src="js/plugin.js"></script>
+      <!-- sidebar -->
+      <script src="js/jquery.mCustomScrollbar.concat.min.js"></script>
+      <script src="js/custom.js"></script>
+      <!-- javascript --> 
+      <script src="js/owl.carousel.js"></script>
+      <script src="https:cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+	  <script>
+
+            
+		function get(target){
+			return document.querySelector(target);
+		}
+		async function download(){
+			let url = get("#url-target").value;
+
+			if (!url) return alert("คึบ่ใส่!");
+
+			Swal.fire({
+				icon: 'info',
+				title: 'กำลังโหลด...',
+				showCloseButton: false,
+				showCancelButton: false,
+				showConfirmButton:false,
+				allowOutsideClick: false
+			})
+
+
+			try{
+					let infoResponse = await axios({
+						url :`http://203.159.94.97:3000/mp3-info/${encodeURIComponent(url)}`,
+						method : "GET"
+					});
+					let title = infoResponse.data.title;
+					
+					let response = await axios({
+						url : `http://203.159.94.97:3000/mp3/${encodeURIComponent(url)}`,
+						method : "GET",
+						responseType: 'arraybuffer',
+						headers: {
+							'Content-Type': 'audio/wav'
+						}
+					});
+
+					Swal.close();
+					Swal.fire({
+							icon: 'success',
+							title: 'เรียบร้อย!',
+							showConfirmButton: false,
+					timer: 1500
+					});
+					
+					console.log(response.data);
+
+					const blob = new Blob([response.data], {
+						type: 'audio/wav'
+					});
+
+					const downloadedURL = window.URL.createObjectURL(blob);
+					const link = document.createElement('a');
+					link.href = downloadedURL;
+					link.setAttribute('download', `${title}.mp3`); //or any other extension
+					document.body.appendChild(link);
+					link.click();
+			}catch(error){
+				console.error(error.response?.data || error.stack);
+				Swal.fire({
+							icon: 'error',
+							title: 'ผิดพลาด!',
+							text : (error.response?.data || error.stack ),
+							showConfirmButton: true
+					});
+			}
+		}
+	</script>
+</body>
+</html>
